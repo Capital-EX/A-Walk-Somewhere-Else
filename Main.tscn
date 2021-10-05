@@ -1,0 +1,560 @@
+[gd_scene load_steps=53 format=2]
+
+[ext_resource path="res://Harmonic.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://scenes/BG.tscn" type="PackedScene" id=2]
+[ext_resource path="res://shaders/wiggle-noise.tres" type="Texture" id=3]
+[ext_resource path="res://shaders/Wiggle.tres" type="Material" id=4]
+[ext_resource path="res://scenes/Choices.tscn" type="PackedScene" id=5]
+[ext_resource path="res://shaders/dithering-pattern.png" type="Texture" id=6]
+[ext_resource path="res://imgs/you.png" type="Texture" id=7]
+[ext_resource path="res://scenes/YouDogContainer.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Main.gd" type="Script" id=9]
+[ext_resource path="res://scenes/CharactersThoughts.tscn" type="PackedScene" id=10]
+[ext_resource path="res://audio/noise.ogg" type="AudioStream" id=11]
+[ext_resource path="res://CatStats.gd" type="Script" id=12]
+[ext_resource path="res://scenes/YourCatContainer.tscn" type="PackedScene" id=13]
+[ext_resource path="res://DogStats.gd" type="Script" id=14]
+[ext_resource path="res://YourStats.gd" type="Script" id=15]
+[ext_resource path="res://scenes/GatherFood.tscn" type="PackedScene" id=16]
+[ext_resource path="res://You.gd" type="Script" id=17]
+[ext_resource path="res://audio/thud.wav" type="AudioStream" id=18]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 15.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.105882, 0.113725, 0.133333, 1 )
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxFlat" id=3]
+content_margin_left = 15.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0.0117647, 0.027451, 0.0627451, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+content_margin_left = 15.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0.0117647, 0.027451, 0.0627451, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.678431, 0.678431, 0.678431, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+content_margin_left = 15.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0.0117647, 0.027451, 0.0627451, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.301961, 0.301961, 0.301961, 1 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 32
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=7]
+default_font = SubResource( 6 )
+Button/colors/font_color = Color( 0.772549, 0.772549, 0.772549, 1 )
+Button/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.2 )
+Button/colors/font_color_hover = Color( 1, 1, 1, 1 )
+Button/colors/font_color_pressed = Color( 0.254902, 0.254902, 0.254902, 1 )
+Button/constants/hseparation = 2
+Button/fonts/font = null
+Button/styles/disabled = SubResource( 1 )
+Button/styles/focus = SubResource( 2 )
+Button/styles/hover = SubResource( 3 )
+Button/styles/normal = SubResource( 4 )
+Button/styles/pressed = SubResource( 5 )
+
+[sub_resource type="DynamicFont" id=8]
+size = 32
+font_data = ExtResource( 1 )
+
+[sub_resource type="Shader" id=9]
+code = "shader_type canvas_item;
+uniform sampler2D noise;
+const float scale = 0.0027f;
+uniform bool enabled = true;
+void fragment() {
+	vec2 uv = UV;
+	vec2 noise_pixel_size = vec2(256f);
+	vec2 noise_uv = UV / TEXTURE_PIXEL_SIZE / noise_pixel_size;
+	vec2 sample = texture(noise, noise_uv + TIME - mod(TIME, 0.2)).rb;
+	vec2 rb = (sample - 0.5) * TEXTURE_PIXEL_SIZE * 2f;
+	uv += rb * float(enabled);
+	vec4 color = texture(TEXTURE, clamp(vec2(0f, 0f), uv, vec2(1f,1f)));
+	COLOR.rgba = color;
+}"
+
+[sub_resource type="ShaderMaterial" id=10]
+resource_local_to_scene = true
+shader = SubResource( 9 )
+shader_param/enabled = true
+shader_param/noise = ExtResource( 3 )
+
+[sub_resource type="StyleBoxLine" id=11]
+color = Color( 1, 1, 1, 1 )
+thickness = 3
+
+[sub_resource type="StyleBoxEmpty" id=12]
+
+[sub_resource type="Shader" id=13]
+code = "shader_type canvas_item;
+uniform sampler2D noise;
+const float scale = 0.0027f;
+uniform bool enabled = true;
+void fragment() {
+	vec2 uv = UV;
+	vec2 noise_pixel_size = vec2(256f);
+	vec2 noise_uv = UV / TEXTURE_PIXEL_SIZE / noise_pixel_size;
+	vec2 sample = texture(noise, noise_uv + TIME - mod(TIME, 0.2)).rb;
+	vec2 rb = (sample - 0.5) * TEXTURE_PIXEL_SIZE * 2f;
+	uv += rb * float(enabled);
+	vec4 color = texture(TEXTURE, clamp(vec2(0f, 0f), uv, vec2(1f,1f)));
+	COLOR.rgba = color;
+}"
+
+[sub_resource type="ShaderMaterial" id=14]
+resource_local_to_scene = true
+shader = SubResource( 13 )
+shader_param/enabled = true
+shader_param/noise = ExtResource( 3 )
+
+[sub_resource type="StyleBoxFlat" id=15]
+draw_center = false
+border_width_left = 2
+border_width_right = 2
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=16]
+draw_center = false
+border_width_left = 2
+border_width_right = 2
+border_color = Color( 0.984314, 0.933333, 0.486275, 1 )
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+
+[sub_resource type="StyleBoxFlat" id=17]
+draw_center = false
+border_width_left = 2
+border_width_right = 2
+border_color = Color( 0.92549, 0.607843, 0, 1 )
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+
+[sub_resource type="StyleBoxEmpty" id=18]
+
+[sub_resource type="StyleBoxFlat" id=19]
+draw_center = false
+border_width_left = 2
+border_width_right = 2
+border_color = Color( 0.223529, 0.223529, 0.223529, 1 )
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+
+[sub_resource type="StyleBoxFlat" id=20]
+draw_center = false
+border_width_left = 2
+border_width_right = 2
+border_color = Color( 1, 0.898039, 0.0117647, 1 )
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+
+[sub_resource type="Shader" id=21]
+code = "shader_type canvas_item;
+uniform sampler2D dither;
+uniform int offset = 0;
+
+void fragment() {
+	ivec2 iuv = ivec2(UV * vec2(364, 512));
+	int x = int(iuv.x % 8);
+	int y = int(iuv.y % 8);
+	ivec2 puv = ivec2(x, y);
+	vec2 duv = vec2(float(puv.x + offset * 8) / 512f, float(puv.y) / 8f);
+	vec2 uv = UV;
+	vec4 c = texture(TEXTURE, uv);
+	COLOR = vec4(vec3(0), texture(dither, duv).r);
+}"
+
+[sub_resource type="ShaderMaterial" id=22]
+resource_local_to_scene = true
+shader = SubResource( 21 )
+shader_param/offset = 52
+shader_param/dither = ExtResource( 6 )
+
+[sub_resource type="Shader" id=23]
+code = "shader_type canvas_item;
+uniform sampler2D dither;
+uniform int offset = 0;
+
+void fragment() {
+	ivec2 iuv = ivec2(UV * vec2(364, 570));
+	int x = int(iuv.x % 8);
+	int y = int(iuv.y % 8);
+	ivec2 puv = ivec2(x, y);
+	vec2 duv = vec2(float(puv.x + offset * 8) / 512f, float(puv.y) / 8f);
+	vec2 uv = UV;
+	vec4 c = texture(TEXTURE, uv);
+	COLOR = vec4(vec3(0), texture(dither, duv).r);
+}"
+
+[sub_resource type="ShaderMaterial" id=24]
+resource_local_to_scene = true
+shader = SubResource( 23 )
+shader_param/offset = 53
+shader_param/dither = ExtResource( 6 )
+
+[sub_resource type="StyleBoxFlat" id=25]
+bg_color = Color( 1, 1, 1, 1 )
+draw_center = false
+border_width_top = 2
+border_width_bottom = 2
+
+[sub_resource type="StyleBoxFlat" id=26]
+bg_color = Color( 0, 0, 0, 1 )
+draw_center = false
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color( 0.247059, 0.247059, 0.247059, 1 )
+
+[sub_resource type="StyleBoxEmpty" id=27]
+
+[sub_resource type="StyleBoxFlat" id=28]
+bg_color = Color( 0, 0, 0, 1 )
+draw_center = false
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color( 0.0862745, 0.0862745, 0.0862745, 1 )
+
+[sub_resource type="StyleBoxFlat" id=29]
+bg_color = Color( 0, 0, 0, 1 )
+draw_center = false
+border_width_top = 2
+border_width_bottom = 2
+
+[sub_resource type="Shader" id=30]
+code = "shader_type canvas_item;
+uniform sampler2D dither;
+uniform int offset = 0;
+
+void fragment() {
+	ivec2 iuv = ivec2(UV * vec2(768, 570));
+	int x = int(iuv.x % 8);
+	int y = int(iuv.y % 8);
+	ivec2 puv = ivec2(x, y);
+	vec2 duv = vec2(float(puv.x + offset * 8) / 512f, float(puv.y) / 8f);
+	vec2 uv = UV;
+	vec4 c = texture(TEXTURE, uv);
+	COLOR = vec4(vec3(0), texture(dither, duv).r);
+}"
+
+[sub_resource type="ShaderMaterial" id=31]
+resource_local_to_scene = true
+shader = SubResource( 30 )
+shader_param/offset = 63
+shader_param/dither = ExtResource( 6 )
+
+[sub_resource type="StyleBoxFlat" id=32]
+bg_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Animation" id=33]
+length = 1.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 63, 63, 62, 61, 51, 47, 37, 36, 20, 15, 5, 0 ]
+}
+
+[sub_resource type="StyleBoxFlat" id=34]
+bg_color = Color( 0, 0, 0, 1 )
+
+[node name="Main" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 7 )
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 628.565 ],
+"_edit_use_anchors_": false
+}
+
+[node name="HBox" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBox"]
+margin_right = 200.0
+margin_bottom = 570.0
+custom_constants/separation = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBox/VBoxContainer"]
+margin_right = 200.0
+margin_bottom = 279.0
+size_flags_vertical = 3
+custom_constants/separation = 0
+
+[node name="CatStats" type="VBoxContainer" parent="HBox/VBoxContainer/VBoxContainer"]
+margin_right = 200.0
+margin_bottom = 79.0
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 12 )
+
+[node name="CatHungerLabel" type="Label" parent="HBox/VBoxContainer/VBoxContainer/CatStats"]
+margin_top = 5.0
+margin_right = 200.0
+margin_bottom = 37.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 8 )
+text = "HUNGER: 00"
+align = 1
+
+[node name="CatHealthLabel" type="Label" parent="HBox/VBoxContainer/VBoxContainer/CatStats"]
+margin_top = 41.0
+margin_right = 200.0
+margin_bottom = 73.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 8 )
+text = "HEALTH: 00"
+align = 1
+
+[node name="YourCat" parent="HBox/VBoxContainer/VBoxContainer" instance=ExtResource( 13 )]
+material = SubResource( 10 )
+margin_top = 79.0
+margin_bottom = 279.0
+
+[node name="HSeparator" type="HSeparator" parent="HBox/VBoxContainer"]
+margin_top = 279.0
+margin_right = 200.0
+margin_bottom = 279.0
+custom_styles/separator = SubResource( 11 )
+custom_constants/separation = 0
+
+[node name="HSeparator2" type="HSeparator" parent="HBox/VBoxContainer"]
+margin_top = 279.0
+margin_right = 200.0
+margin_bottom = 290.0
+custom_styles/separator = SubResource( 12 )
+custom_constants/separation = 11
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBox/VBoxContainer"]
+margin_top = 290.0
+margin_right = 200.0
+margin_bottom = 570.0
+size_flags_vertical = 3
+custom_constants/separation = 0
+
+[node name="DogStats" type="VBoxContainer" parent="HBox/VBoxContainer/VBoxContainer2"]
+margin_right = 200.0
+margin_bottom = 80.0
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 14 )
+
+[node name="DogHungerLabel" type="Label" parent="HBox/VBoxContainer/VBoxContainer2/DogStats"]
+margin_top = 6.0
+margin_right = 200.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 8 )
+text = "HUNGER: 00"
+align = 1
+
+[node name="DogHealthLabel" type="Label" parent="HBox/VBoxContainer/VBoxContainer2/DogStats"]
+margin_top = 42.0
+margin_right = 200.0
+margin_bottom = 74.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 8 )
+text = "HEALTH: 00"
+align = 1
+
+[node name="YourDog" parent="HBox/VBoxContainer/VBoxContainer2" instance=ExtResource( 8 )]
+material = SubResource( 14 )
+
+[node name="PanelContainer" type="PanelContainer" parent="HBox"]
+margin_left = 200.0
+margin_right = 568.0
+margin_bottom = 570.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 15 )
+
+[node name="ViewportContainer" type="ViewportContainer" parent="HBox/PanelContainer"]
+material = ExtResource( 4 )
+margin_left = 2.0
+margin_right = 366.0
+margin_bottom = 570.0
+mouse_filter = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="Viewport" type="Viewport" parent="HBox/PanelContainer/ViewportContainer"]
+size = Vector2( 364, 570 )
+handle_input_locally = false
+render_target_update_mode = 3
+audio_listener_enable_3d = true
+
+[node name="Background" parent="HBox/PanelContainer/ViewportContainer/Viewport" instance=ExtResource( 2 )]
+
+[node name="CharactersThoughts" parent="HBox/PanelContainer" instance=ExtResource( 10 )]
+mouse_filter = 1
+
+[node name="ProceedButton" type="Button" parent="HBox/PanelContainer"]
+margin_left = 2.0
+margin_right = 366.0
+margin_bottom = 570.0
+custom_styles/hover = SubResource( 16 )
+custom_styles/pressed = SubResource( 17 )
+custom_styles/focus = SubResource( 18 )
+custom_styles/disabled = SubResource( 19 )
+custom_styles/normal = SubResource( 20 )
+
+[node name="Choices" parent="HBox/PanelContainer" instance=ExtResource( 5 )]
+visible = false
+material = SubResource( 22 )
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 2.0
+margin_right = 366.0
+margin_bottom = 570.0
+rect_min_size = Vector2( 0, 512 )
+
+[node name="GatherFood" parent="HBox/PanelContainer" instance=ExtResource( 16 )]
+visible = false
+material = SubResource( 24 )
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 2.0
+margin_right = 366.0
+margin_bottom = 570.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBox"]
+margin_left = 568.0
+margin_right = 768.0
+margin_bottom = 570.0
+custom_constants/separation = 0
+alignment = 1
+
+[node name="YourStats" type="VBoxContainer" parent="HBox/VBoxContainer2"]
+margin_right = 200.0
+margin_bottom = 84.0
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 15 )
+
+[node name="YourHungerLabel" type="Label" parent="HBox/VBoxContainer2/YourStats"]
+margin_top = 8.0
+margin_right = 200.0
+margin_bottom = 40.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 8 )
+text = "HUNGER: 00"
+align = 1
+
+[node name="YourHealthLabel" type="Label" parent="HBox/VBoxContainer2/YourStats"]
+margin_top = 44.0
+margin_right = 200.0
+margin_bottom = 76.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 8 )
+text = "HEALTH: %s"
+align = 1
+
+[node name="LookBackButton" type="Button" parent="HBox/VBoxContainer2"]
+margin_top = 84.0
+margin_right = 200.0
+margin_bottom = 120.0
+custom_styles/hover = SubResource( 25 )
+custom_styles/pressed = SubResource( 26 )
+custom_styles/focus = SubResource( 27 )
+custom_styles/disabled = SubResource( 28 )
+custom_styles/normal = SubResource( 29 )
+custom_colors/font_color = Color( 0.878431, 0.878431, 0.878431, 1 )
+custom_colors/font_color_hover = Color( 1, 1, 1, 1 )
+custom_colors/font_color_pressed = Color( 0.247059, 0.247059, 0.247059, 1 )
+text = "Look Back"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="YouImage" type="TextureRect" parent="HBox/VBoxContainer2"]
+material = ExtResource( 4 )
+margin_top = 120.0
+margin_right = 200.0
+margin_bottom = 570.0
+rect_min_size = Vector2( 200, 384 )
+size_flags_vertical = 10
+texture = ExtResource( 7 )
+script = ExtResource( 17 )
+
+[node name="Tween" type="Tween" parent="HBox/VBoxContainer2/YouImage"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 11 )
+volume_db = -3.267
+autoplay = true
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+material = SubResource( 31 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 32 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Panel"]
+autoplay = "fade_in"
+anims/fade_in = SubResource( 33 )
+
+[node name="BlackOut" type="Panel" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 34 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Thud" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 18 )
+volume_db = -13.736
+pitch_scale = 0.5

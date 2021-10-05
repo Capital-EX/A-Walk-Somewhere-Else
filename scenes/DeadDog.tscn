@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://imgs/dead-pets/bug.PNG" type="Texture" id=1]
+[ext_resource path="res://imgs/dead-pets/dog-dead.PNG" type="Texture" id=2]
+[ext_resource path="res://imgs/dead-pets/mushrooms.PNG" type="Texture" id=3]
+[ext_resource path="res://imgs/dead-pets/trees.PNG" type="Texture" id=4]
+
+[node name="DeadDog" type="Sprite3D" groups=[
+"dead dog",
+]]
+offset = Vector2( 0, 128 )
+shaded = true
+texture = ExtResource( 2 )
+
+[node name="Shrooms" type="Sprite3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.001 )
+offset = Vector2( 0, 128 )
+shaded = true
+texture = ExtResource( 3 )
+
+[node name="Plants" type="Sprite3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.002 )
+offset = Vector2( 0, 128 )
+shaded = true
+texture = ExtResource( 4 )
+
+[node name="Bugs" type="Sprite3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.003 )
+offset = Vector2( 0, 128 )
+shaded = true
+texture = ExtResource( 1 )

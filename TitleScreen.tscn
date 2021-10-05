@@ -1,0 +1,89 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Harmonic.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://shaders/Wiggle.tres" type="Material" id=2]
+[ext_resource path="res://imgs/title-bg.png" type="Texture" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 32.0
+content_margin_right = 32.0
+content_margin_top = 7.0
+content_margin_bottom = 7.0
+bg_color = Color( 0.0117647, 0.027451, 0.0627451, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=3]
+default_font = SubResource( 2 )
+Button/colors/font_color = Color( 0.88, 0.88, 0.88, 1 )
+Button/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.2 )
+Button/colors/font_color_hover = Color( 0.94, 0.94, 0.94, 1 )
+Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
+Button/constants/hseparation = 2
+Button/fonts/font = null
+Button/styles/disabled = null
+Button/styles/focus = null
+Button/styles/hover = null
+Button/styles/normal = SubResource( 1 )
+Button/styles/pressed = null
+
+[node name="TitleScreen" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title-bg" type="TextureRect" parent="."]
+material = ExtResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 13
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 748.0
+margin_bottom = 557.0
+custom_constants/separation = 8
+alignment = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_left = 212.0
+margin_top = 437.0
+margin_right = 516.0
+margin_bottom = 483.0
+size_flags_horizontal = 6
+text = "Start your travels"
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_left = 193.0
+margin_top = 491.0
+margin_right = 535.0
+margin_bottom = 537.0
+size_flags_horizontal = 6
+text = "Remain for a bit more"

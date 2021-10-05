@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://CharactersThoughts.gd" type="Script" id=1]
+[ext_resource path="res://audio/voice.wav" type="AudioStream" id=2]
+
+[node name="CharactersThoughts" type="CenterContainer"]
+margin_left = 2.0
+margin_right = 366.0
+margin_bottom = 570.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_left = 28.0
+margin_top = 278.0
+margin_right = 336.0
+margin_bottom = 292.0
+rect_min_size = Vector2( 308, 0 )
+align = 1
+autowrap = true
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+volume_db = -10.0

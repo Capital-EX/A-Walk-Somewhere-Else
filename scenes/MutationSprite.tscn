@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/MutationSprite.gd" type="Script" id=1]
+
+[sub_resource type="Shader" id=1]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+
+uniform sampler2D noise;
+uniform float threshold : hint_range(0.0, 1.0) = 1.0;
+
+void fragment() {
+	COLOR = texture(TEXTURE, UV);
+	ivec2 puv = ivec2(UV / TEXTURE_PIXEL_SIZE);
+	puv /= 4;
+	vec2 uv = vec2(puv) * TEXTURE_PIXEL_SIZE;
+
+	float noise_sample = texture(noise, uv + vec2(TIME)).r ;
+	COLOR.a *= float(noise_sample >= threshold);
+	//COLOR.rgb = vec3(noise_sample);
+}"
+
+[sub_resource type="OpenSimplexNoise" id=2]
+seed = 3
+octaves = 1
+period = 0.1
+persistence = 1.0
+lacunarity = 0.1
+
+[sub_resource type="NoiseTexture" id=3]
+flags = 3
+seamless = true
+as_normalmap = true
+bump_strength = 32.0
+noise = SubResource( 2 )
+
+[sub_resource type="ShaderMaterial" id=4]
+resource_local_to_scene = true
+shader = SubResource( 1 )
+shader_param/threshold = 1.0
+shader_param/noise = SubResource( 3 )
+
+[sub_resource type="Animation" id=5]
+resource_name = "appear"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/threshold")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 1 ),
+"transitions": PoolRealArray( 0.287174, 0.287174, -2 ),
+"update": 0,
+"values": [ 1.0, 1.0, 0.0 ]
+}
+
+[node name="MutationSprite" type="Sprite"]
+material = SubResource( 4 )
+script = ExtResource( 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/appear = SubResource( 5 )

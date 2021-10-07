@@ -9,7 +9,7 @@ enum { CAUGHT_DOG, CAUGHT_CAT }
 var events = [
 	{
 		description = """
-			You encounter an sickly old %s in the middle of the path. %s says %s can heal one of your pets. However, %s request that you forage food for %s.
+			You encounter a sickly old %s in the middle of the path. %s says %s can heal one of your pets. However, %s requests that you forage food for %s.
 
 			Do you accept, or do you reject.
 		""",
@@ -50,7 +50,7 @@ var events = [
 		],
 		flavors = [
 			["The animals are sickly with mushroom caps poking out of their fur."],
-			["Their heads convoulse and shake. The mushroom in their eyes seem to pulse with each twitch."],
+			["Their heads convulse and shake. The mushroom in their eyes seem to pulse with each twitch."],
 			["Their breathing is labored from the mushrooms growing out of their rib cages."],
 			["Despite being blinded, the wolves shamble around you with perfect synchronization."]
 		]

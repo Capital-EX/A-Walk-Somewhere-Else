@@ -15,7 +15,7 @@ func _ready():
 func _on_visibility_changed() -> void:
 	if visible:
 		show_text("""
-			You rest to scanvage for for you. You'll need to be careful what you feed them...
+			You rest to scavenge for you. You'll need to be careful what you feed them...
 		""")
 		
 	else:
